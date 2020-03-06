@@ -10,12 +10,16 @@
    Upload an image
    api/images POST 200 on success, 400 and error on failure
 
+   (Sprint 2)
+   Create new user account
+   api/user POST 201 on success
+
    Author: S. Sigman 
    Version: 1.1 (2/3/2020)
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const Image = require("./models/image");
+//const Image = require("./models/image");
 
 const app = express();
 const PORT = 3000;
@@ -27,6 +31,7 @@ const router = express.Router();
 // Use the body parser with urlencoded data
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use('/api/images', require('./api/images'));
+router.use('/api', require('./api/users'));
 app.use(router);
 
 app.listen(PORT, () => {

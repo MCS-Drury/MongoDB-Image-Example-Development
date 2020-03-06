@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>DUCS Image App</title>
+<!-- <style> 
+    #passError, #dupError{
+        padding-right: unset;
+    }
+    #passErrorCloseButton, #dupErrorCloseButton{
+        color: #721c72
+    }
+</style> -->
+</head>
+<body>
+<!-- Modal popups adapted from https://bootsnipp.com/snippets/qr46N -->
+<div class="container">
+    <div class="card border-success mt-5">
+        <h1 class="card-header">DUCS Image App - Home</h1>
+        <div class="card-body">
+            <div id="loginPanel" class="headMenu">
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#sem-login">
+                    Login
+                </button>
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#sem-reg">
+                    Create Account
+                </button>
+            </div>
+            <div id="welcomeMsg" class="headMenu">
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <div class="card border-success mt-5">
+        <div class="card-body">
+            <div>
+                <p>Complete design of the home page for the app will be
+                   completed in later sprints.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Creat Account Modal -->
+    <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-reg">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+    
+                    <!-- Modal body -->
+                    <div class="modal-body seminor-login-modal-body">
+                        <h5 class="modal-title text-center">CREATE AN ACCOUNT</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span><i class="fa fa-times" aria-hidden="true"></i></span>
+                        </button>
+
+                        <form class="seminor-login-form" id="regForm">
+                            <div  id='dupError' class="alert alert-danger alert-dismissible fade collapse">  
+                                <div>
+                                    <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error!</h4>
+                                    <button id="dupErrorCloseButton" type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div>
+                                <p>User Exists - Use a different email to create anogher account.</p>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="username" required autocomplete="off">
+                                <label class="form-control-placeholder" for="name">Email Address</label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" required autocomplete="off" 
+                                       pattern='^[A-Z][a-z]*, [A-Z][a-z]*$' 
+                                       title="Enter Last name, First name.  First letters capitalized.">
+                                <label class="form-control-placeholder" for="name">Last Name, First Name</label>
+                            </div>
+                                <div  id='passError' class="alert alert-danger alert-dismissible fade collapse">  
+                                    <div>
+                                        <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error!</h4>
+                                        <button id="passErrorCloseButton" type="button" class="close" data-dismiss="alert">&times;</button>
+                                    </div>
+                                    <p>Password Mismatch - The passwords you enter must match.</p>
+                                </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" required autocomplete="off"
+                                    pattern='^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$' 
+                                    title="Password must contain at least 8 characters and at least one number, one letter and one special character.">
+                                <label class="form-control-placeholder" for="password">Password</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="confirmPass" required autocomplete="off">
+                                <label class="form-control-placeholder" for="password">Confirm Password</label>
+                            </div>
+                        
+                            <div class="btn-check-log">
+                                    <button type="submit" class="btn-check-login">SIGN UP</button>
+                            </div>
+                            <div class="create-new-fau text-center pt-3">
+                                    <a href="#" class="text-primary-fau">
+                                        <span data-toggle="modal" data-target="#sem-login" data-dismiss="modal">
+                                            Already Have An Account
+                                        </span>
+                                    </a>
+                            </div>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Login Modal -->
+  <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-login">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Modal body -->
+        <div class="modal-body seminor-login-modal-body">
+            <h5 class="modal-title text-center">LOGIN TO MY ACCOUNT</h5>
+            <button type="button" class="close" data-dismiss="modal">
+                <span><i class="fa fa-times" aria-hidden="true"></i></span>
+            </button>
+
+            <div  id='authError' class="alert alert-danger alert-dismissible fade collapse">  
+                <div>
+                    <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error!</h4>
+                    <button id="authErrorCloseButton" type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+                <p>Bad email or password.  Please try again.</p>
+            </div>
+
+            <form id="loginForm" class="seminor-login-form">
+                <div class="form-group">
+                    <input type="email" class="form-control" required autocomplete="on" id="email">
+                    <label class="form-control-placeholder" for="name">Email address</label>
+                </div>
+                <div class="form-group">
+                    <input id="logPassword" type="password" class="form-control" required autocomplete="off">
+                    <label class="form-control-placeholder" for="password">Password</label>
+                </div>
+                <div class="form-group">
+                    <label class="container-checkbox">
+                        Remember Me On This Computer
+                        <input type="checkbox" checked="checked" required>
+                        <span class="checkmark-box"></span>
+                    </label>
+                </div>
+
+                <div class="btn-check-log">
+                    <button type="submit" class="btn-check-login">LOGIN</button>
+                </div>
+
+                <div class="forgot-pass-fau text-center pt-3">
+                    <a href="/reset_pass" class="text-secondary">
+                        Forgot Your Password?
+                    </a>
+                </div>
+                <div class="create-new-fau text-center pt-3">
+                    <a href="#" class="text-primary-fau">
+                        <span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">
+                            Create A New Account
+                        </span>
+                    </a>
+                </div>
+            </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="js/authCtrl.js"></script>
+</body>
+</html>
