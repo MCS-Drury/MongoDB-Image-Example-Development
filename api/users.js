@@ -8,6 +8,8 @@
 // 2. Sprint 2 - added route to authenticate a user,
 //               api/auth  - Success returns: jwt token
 //                           Fail returns: 401 bad username/password
+// 3. Sprint 3 - api/user POST modified to create directory for the
+//             -               new user's images.
 
 const jwt = require ("jwt-simple");
 const User = require("../models/user");
@@ -15,6 +17,11 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt-nodejs");
 const config = require("../configuration/config.json");
 const bodyParser = require("body-parser");
+const fs = require('fs');
+const crypto = require('crypto');
+
+const DEBUG = false;
+
 var secret = config.secret;
 router.use(bodyParser.json());
 
@@ -24,13 +31,17 @@ router.post("/user",(req,res)=> {
     User.findOne({uid: {$eq: req.body.username}}, (err, user)=> {
       if(err) throw err;
       if(user !== null) {
-        console.log("Duplicate Check - Duplicate user found: " + req.body.username);
-        res.sendStatus(409);  // send duplicate resource error
+        if (DEBUG) {
+          console.log("Duplicate Check - Duplicate user found: " + req.body.username);
+        }
+          res.sendStatus(409);  // send duplicate resource error
       }
       else {
-        console.log("User: " + req.body.username);
-        console.log("Password: " + req.body.password);
-        console.log("Name: " + req.body.full_name);
+        if (DEBUG) {
+          console.log("User: " + req.body.username);
+          console.log("Password: " + req.body.password);
+          console.log("Name: " + req.body.full_name);
+        }
         // get a hash for the password
         bcrypt.hash(req.body.password, null, null, (err, hash)=> {
           var newUser = new User ( {
@@ -39,11 +50,28 @@ router.post("/user",(req,res)=> {
             full_name: req.body.full_name,
             date_created: new Date()
           });
-
-          // save the user
-          newUser.save(function (err) {
-              if (err) return next(err);
-              res.sendStatus(201);
+          // create the users image storage
+          if (DEBUG)
+            console.log('New user: ' + newUser.uid);
+          let usrDir = crypto.createHash('sha256').update(newUser.uid).digest("hex");
+          
+          if (DEBUG)
+            console.log("making dir: " + usrDir + " for user " + newUser.uid);
+          
+            let newDir = "public/images/" + usrDir;
+          fs.mkdir(newDir, (err)=>{
+              if  (err) {
+                if (DEBUG)
+                  console.log('new directory not created');
+                return res.status(400).json({error: "Directory for " + newUser.uid + " not created"});
+              }
+              if (DEBUG)
+                console.log("Directory created");
+              // save the user
+              newUser.save(function (err) {
+                if (err) return next(err);
+                res.sendStatus(201);
+              });
           });
         });
       }
