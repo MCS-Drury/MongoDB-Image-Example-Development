@@ -204,9 +204,6 @@ router.post('/', upload.single('photo'), (req, res) => {
             upload_date: new Date(),
             owner: user.uid
         });
-        let path2PhotoPage = path.resolve("pages/home.html");
-        if (DEBUG)
-            console.log("The base of the absolute path is: " + path2PhotoPage);
 
         // save the image to the database
         img.save((err, img)=> {
@@ -214,7 +211,7 @@ router.post('/', upload.single('photo'), (req, res) => {
                 res.status(400).send(err);
             } else {
                 //res.send("Image was saved.");
-                res.sendFile(path2PhotoPage);
+                res.status(201).json({success: "Image uploaded."});
             }
         });
 
