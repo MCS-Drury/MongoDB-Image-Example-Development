@@ -1,17 +1,31 @@
 body {
     background-color: #00ced1;
 }
-.headMenu{
+
+#userMenu button:hover{
+    text-decoration: underline;
+}
+
+.headMenuRight{
     float: right;
 }
 
-.headMenu .btn-link {
+.headMenuRight .btn-link {
     color: black;
 }
 
-#welcomeMsg {
+.headMenuLeft{
+    float: left;
+}
+
+.headMenuLeft .btn-link{
+    color: black;
+}
+
+#welcomeMsg, #userMenu {
     display: none;
 }
+
 
 #passError, #dupError, #authError {
     padding-right: unset;

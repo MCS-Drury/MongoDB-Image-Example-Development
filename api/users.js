@@ -9,7 +9,11 @@
 //               api/auth  - Success returns: jwt token
 //                           Fail returns: 401 bad username/password
 // 3. Sprint 3 - api/user POST modified to create directory for the
-//             -               new user's images.
+//                             new user's images.
+//                 Return: 201 Created - user created
+//                         400 Failed to create subdirectory for user
+//                         409 Duplicate resource - user exists
+//                         500 Server error - Try later.
 
 const jwt = require ("jwt-simple");
 const User = require("../models/user");
@@ -29,7 +33,9 @@ router.use(bodyParser.json());
 router.post("/user",(req,res)=> {
     // check to see if the user exists
     User.findOne({uid: {$eq: req.body.username}}, (err, user)=> {
-      if(err) throw err;
+      if(err) {
+        return res.status(500).json({error: "Server Error. Try later."});
+      };
       if(user !== null) {
         if (DEBUG) {
           console.log("Duplicate Check - Duplicate user found: " + req.body.username);
@@ -69,8 +75,10 @@ router.post("/user",(req,res)=> {
                 console.log("Directory created");
               // save the user
               newUser.save(function (err) {
-                if (err) return next(err);
-                res.sendStatus(201);
+                if (err) {
+                  return res.status(500).json({error: "Server Error. Try later."});
+                }
+                res.status(201).json({success: "User created."});
               });
           });
         });

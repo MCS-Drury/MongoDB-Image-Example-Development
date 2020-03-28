@@ -12,12 +12,19 @@
 //    api/images POST - Saves image after authorizing 
 //                      user.  Requires x-auth header.
 //                      Stores images in subdirectory of 
-//                      public/images named as the md5 of the 
-//                      uid.
-//                Returns: 201: Created if image is uploaded
-//                         401: Unauthorized if invalid token
-//                         400: If the image copy fails
-//                         507: Image could not be stored
+//                      public/images, which is named as the 
+//                      sha256 of the uid.
+//             Returns: 201: Created if image is uploaded
+//                      401: Unauthorized if invalid token
+//                      400: If the image copy fails
+//                      507: Image could not be stored
+//     api/images?u=<user token> - Retrieves all images for 
+//                       user with specified token.
+//             Returns: 201: Created & image array, if token 
+//                           authorized.
+//                      401: Unauthorized - user not authorized
+//                      404: Not Found - user not found
+//                      500: Server error - try later                   
 
 const Image = require('../models/image');
 const User = require('../models/user');
@@ -29,7 +36,7 @@ const crypto = require('crypto');
 const jwt = require ("jwt-simple");
 const config = require("../configuration/config.json");
 
-const DEBUG = true;
+const DEBUG = false;
 
 var secret = config.secret;
 
@@ -73,8 +80,8 @@ router.get('/', (req,res) =>{
     User.findOne({uid: usr}, (err, user)=>{
         if (err) {
             if (DEBUG)
-                console.log("Invalid JWT: user not found");
-            return res.status(400).json({error: "Invalid JWT"});
+                console.log("Server error trying to find user.");
+            return res.status(500).json({error: "Server error. Try later."});
         }
         if (DEBUG) 
                 console.log('Get all images for user: ' + user.uid);
@@ -83,7 +90,7 @@ router.get('/', (req,res) =>{
             // 3. Find the user's images
             Image.find({owner: user.uid},(err,img) => {
                 if (err) {
-                    res.status(400).send(err);
+                    res.status(500).json({error: "Server error: Try later."});
                 }
                 else {
                     res.status(201).json(img);
