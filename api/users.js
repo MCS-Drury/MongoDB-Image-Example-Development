@@ -14,9 +14,13 @@
 //                         400 Failed to create subdirectory for user
 //                         409 Duplicate resource - user exists
 //                         500 Server error - Try later.
+//
+// 4. Sprint 4 - modified api/auth to use MySQL database
+//               return codes and token remain unchanged
 
 const jwt = require ("jwt-simple");
 const User = require("../models/user");
+const Conn = require("../mysqldb");
 const router = require("express").Router();
 const bcrypt = require("bcrypt-nodejs");
 const config = require("../configuration/config.json");
@@ -24,7 +28,7 @@ const bodyParser = require("body-parser");
 const fs = require('fs');
 const crypto = require('crypto');
 
-const DEBUG = false;
+const DEBUG = true;
 
 var secret = config.secret;
 router.use(bodyParser.json());
@@ -105,24 +109,31 @@ router.post("/user",(req,res)=> {
 // route to authenticate a user
 router.post("/auth", (req, res)=>{
   // is the user in the database
-  User.findOne({uid: {$eq: req.body.username}}, (err, user)=> {
-    if (err) throw err;
+  let qry = "select uid, password, full_name from User where uid = ?;";
+  if (DEBUG) 
+    console.log("query: " + qry);
+  Conn.query(qry,[req.body.username], (err, rows) => {
+  //User.findOne({uid: {$eq: req.body.username}}, (err, user)=> {
+    if (err) return res.status(500).json({error: err});
 
-    if (!user) {
+    if (DEBUG)
+       console.log("rows returned:" + rows.length);
+
+    if (rows.length == 0) {
       console.log("Auth: User not found");
       // user not found
       res.status(401).json({ error: "Bad username/password."});
     }
     else {
-      console.log("User Found " + user);
-      bcrypt.compare(req.body.password, user.password, (err, valid)=>{
+      console.log("User Found " + rows[0]);
+      bcrypt.compare(req.body.password, rows[0].password, (err, valid)=>{
         if (err) {
           res.status(400).json({ error: err});
         }
         else if (valid) {
-          let commaPos = user.full_name.indexOf(',');
-          let firstName = user.full_name.substring(commaPos+1);
-          let token = jwt.encode({username: user.uid}, secret);
+          let commaPos = rows[0].full_name.indexOf(',');
+          let firstName = rows[0].full_name.substring(commaPos+1);
+          let token = jwt.encode({username: rows[0].uid}, secret);
           res.json({token: token,
                     firstName: firstName});
         }

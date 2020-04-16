@@ -1,3 +1,7 @@
 {
-    "secret": "5JgKvsOxd278oarolsZ45Me9LkjEifmH"
+    "secret": "5JgKvsOxd278oarolsZ45Me9LkjEifmH",
+    "host": "ec2-18-217-134-54.us-east-2.compute.amazonaws.com",
+    "user": "scott",
+    "password": "16Chairs@Lab16screens",
+    "database": "imageDB"
 }
