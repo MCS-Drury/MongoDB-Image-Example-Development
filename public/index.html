@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/photos.css"> <!--styles for photo page-->
 <title>DUCS Image App</title>
 <!-- <style> 
     #passError, #dupError{
@@ -19,11 +20,11 @@
 </head>
 <body>
 <!-- Modal popups adapted from https://bootsnipp.com/snippets/qr46N -->
-<div class="container">
+<div id="main" class="container">
     <div class="card border-success mt-5">
         <h1 class="card-header">DUCS Image App - Home</h1>
         <div class="card-body">
-            <div id="loginPanel" class="headMenu">
+            <div id="loginPanel" class="headMenuRight">
                 <button type="button" class="btn btn-link" data-toggle="modal" data-target="#sem-login">
                     Login
                 </button>
@@ -31,7 +32,10 @@
                     Create Account
                 </button>
             </div>
-            <div id="welcomeMsg" class="headMenu">
+            <div id="userMenu" class="headMenuLeft">
+                <button id="menuPhotos" type="button" class="btn bth-link">Photos</button>
+            </div>
+            <div id="welcomeMsg" class="headMenuRight">
                 <span></span>
             </div>
         </div>
@@ -178,5 +182,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script src="js/authCtrl.js"></script>
+<script src="js/photo.js"></script>
 </body>
 </html>

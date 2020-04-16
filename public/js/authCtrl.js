@@ -1,4 +1,5 @@
 $(() => {
+    // handle login
     $('#loginForm').on('submit',(e)=>{
         e.preventDefault();
 
@@ -30,11 +31,13 @@ $(() => {
         })
         .done((data)=>{
             $('#loginPanel').hide();
+            $('#userMenu').show();
             $('#welcomeMsg span').html("Welcome, " + data.firstName + 
                         '&nbsp;&nbsp;<button id="logout" type="button" class="btn btn-link">Logout</button>');
             $('#welcomeMsg').show();
             $('#logout').on('click',(e)=>{
                 $('#welcomeMsg').hide();
+                $('#userMenu').hide();
                 $('#loginPanel').show();
                 window.localStorage.removeItem('token');
             });
@@ -58,7 +61,7 @@ $(() => {
         $('#confirmPass').val('');
     }) ;
 
-
+    // handle submoission
     $('#regForm').on('submit',(e)=>{
         e.preventDefault();
         
@@ -105,5 +108,40 @@ $(() => {
         }
 
         return false;
+    });
+   
+    // get Photos page
+    $('#menuPhotos').on('click',(e)=>{
+        let pageNo = '9720';
+        let token = window.localStorage.getItem("token");
+        console.log(token);
+        $.ajax({
+            type: "GET",
+            headers: {"X-Auth": token},
+            url: "api/page?pageid=" + pageNo,
+            dataType: "html",
+            statusCode: {
+                401: (resObj, textStatus, jqXHR) => {
+                    alert("Not authorized to access page.");
+                },
+                404: (resObj, textStatus, jqXHR)=> {
+                    alert("Page not found.");
+                },
+            }
+        })
+        .fail((jqXHR) => {
+            if ((jqXHR.status != 401) || jqXHR.status != 404) {
+                alert('Server Error: Try again later'); 
+            }
+        })
+        .done((data)=>{
+            data = data.trim(); // remove leading and trailing whitespace
+            $('#main').html(data);  // replace the content
+            console.log($('#main').html());
+            console.log("Page loaded.");
+            // run script to load data
+            loadImages();
+            return false;
+        });
     });
 });
