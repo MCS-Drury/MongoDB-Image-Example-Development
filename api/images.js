@@ -24,19 +24,23 @@
 //                           authorized.
 //                      401: Unauthorized - user not authorized
 //                      404: Not Found - user not found
-//                      500: Server error - try later                   
+//                      500: Server error - try later   
+// 4. Sprint 3: api/images POST changed to create thumbnail and
+//    store the thumbnail with filename in
+//    images/<sha256 user's uid>/thumbs (3/30/2020)                
 
 const Image = require('../models/image');
 const User = require('../models/user');
 const router = require('express').Router();
 const multer = require('multer');
+const mthumb = require('media-thumbnail');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const jwt = require ("jwt-simple");
 const config = require("../configuration/config.json");
 
-const DEBUG = false;
+const DEBUG = true;
 
 var secret = config.secret;
 
@@ -110,9 +114,9 @@ router.post('/', upload.single('photo'), (req, res) => {
         console.log("File: " + req.body.photoName + " saved to upload.");
     }
     else {
-        if (DEGUG)
+        if (DEBUG)
             console.log({error: "Could not store Image."});
-        return res.status(507).jason({error: "Could not store image."});
+        return res.status(507).json({error: "Could not store image."});
     }
     
     //  1. get auth token from X-Auth header
@@ -177,6 +181,23 @@ router.post('/', upload.single('photo'), (req, res) => {
                                              errMsg: err});
             }     
         });
+        
+        if (DEBUG)
+            console.log("making the thumbnail image");
+
+        // make a thumbnail of the image
+        let thumb = "public/images/" + userSubdir + "/thumbs/"+ req.file.filename;
+        
+        if (DEBUG)
+            console.log("thumbnail image:" + thumb);
+
+        mthumb.forImage(
+            to,
+            thumb,
+            {
+              width: 125
+            })
+            .then(() => console.log('Thumbnail made'), err => console.error(err));
         
         if (DEBUG)
             console.log("Uploaded File copied to images subdirectory");

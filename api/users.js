@@ -73,12 +73,27 @@ router.post("/user",(req,res)=> {
               }
               if (DEBUG)
                 console.log("Directory created");
-              // save the user
-              newUser.save(function (err) {
-                if (err) {
-                  return res.status(500).json({error: "Server Error. Try later."});
+              // make the thumbnail subdirectory
+              let subdir = newDir + "/thumbs";
+              if (DEBUG)
+                console.log("making thumbs directoru")
+              fs.mkdir(subdir, (err)=> {
+                if(err) {
+                  if (DEBUG)
+                    console.log("thumbs subdirectory not created");
+                  return res.status(400).json({error: "thumbs subdirectory not created"});
                 }
-                res.status(201).json({success: "User created."});
+                if (DEBUG)
+                  console.log("thumbs subdirectory created");
+        
+                //assert: both directories are created
+                // save the user
+                newUser.save(function (err) {
+                  if (err) {
+                    return res.status(500).json({error: "Server Error. Try later."});
+                  }
+                  res.status(201).json({success: "User created."});
+                });
               });
           });
         });

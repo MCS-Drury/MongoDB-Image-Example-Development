@@ -135,19 +135,9 @@ $(() => {
             }
         })
         .done((data)=>{
-            //alert("Got ==> " + data);
             data = data.trim(); // remove leading and trailing whitespace
             $('#main').html(data);  // replace the content
             console.log($('#main').html());
-            // $.getScript("http://localhost:3000/js/photo.js")
-            // .done((script, textStatus)=>{
-            //     alert("Success returned: " + textStatus +
-            //           "\nScript: " + script);
-            // })
-            // .fail((jqxhr, settings, exception)=>{
-            //     alert("Failed: status "+ jqxhr.statusCode +
-            //           "\n        error " + jqxhr.statusText);
-            // });  // load the photo script and execute it
             console.log("Page loaded.");
             // run script to load data
             loadImages();
