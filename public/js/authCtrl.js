@@ -61,7 +61,7 @@ $(() => {
         $('#confirmPass').val('');
     }) ;
 
-    // handle submoission
+    // handle submission
     $('#regForm').on('submit',(e)=>{
         e.preventDefault();
         
